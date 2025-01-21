@@ -5,16 +5,16 @@ allow_tf32_on_cudnn: true
 seed: 0
 
 # path
-vit_name: vit_h
-model_path: /data/zhoupeilin/model/sam_vit_h_4b8939.pth
-data_dir: /data/zhoupeilin/data/cellpose_generalized
-result_pth_path: /data/zhoupeilin/data/cellpose_generalized/cellseg1/cellseg1_cellpose_generalized_5/sam_lora.pth
-train_image_dir: /data/zhoupeilin/data/cellpose_generalized/train/images
-train_mask_dir: /data/zhoupeilin/data/cellpose_generalized/train/masks
+vit_name: vit_b
+model_path: /user/teuber5/u12094/.cache/micro_sam/models/vit_b
+# data_dir: /data/zhoupeilin/data/cellpose_generalized
+result_pth_path: /scratch/usr/nimcarot/sam/experiments/cellseg1
+# train_image_dir: /data/zhoupeilin/data/cellpose_generalized/train/images
+# train_mask_dir: /data/zhoupeilin/data/cellpose_generalized/train/masks
 
 # data
 resize_size: [512, 512]
-patch_size: 256
+patch_size: 512
 sam_image_size: 512
 train_id: [0, 1, 2, 3, 4]
 duplicate_data: 32

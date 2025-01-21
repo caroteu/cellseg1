@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from scipy.ndimage import find_objects
 
-from data.utils import remap_mask_color
+from .data.utils import remap_mask_color
 
 
 def sample_2d(distance, num_samples, equal_prob=False):

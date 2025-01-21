@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from torch.utils.data import Dataset
 
-from data.utils import load_data, make_tiles, remap_mask_color, resize_to_short_edge
+from .utils import load_data, make_tiles, remap_mask_color, resize_to_short_edge
 
 
 class TrainDataset(Dataset):

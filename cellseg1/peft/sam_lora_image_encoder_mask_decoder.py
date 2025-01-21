@@ -29,8 +29,8 @@ import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 
-from segment_anything import sam_model_registry
-from segment_anything.modeling import Sam
+from ..segment_anything import sam_model_registry
+from ..segment_anything.modeling import Sam
 
 
 class _LoRA_qkv(nn.Module):
