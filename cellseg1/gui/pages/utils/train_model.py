@@ -18,7 +18,7 @@ def load_dataset(config):
 def train_model(config, state_manager):
     os.environ["CUDA_VISIBLE_DEVICES"] = config["selected_gpu"]
 
-    from cellseg1_train import (
+    from cellseg1.cellseg1_train import (
         load_model,
         prepare_directories,
         save_model_pth,

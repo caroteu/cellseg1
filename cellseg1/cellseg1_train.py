@@ -19,8 +19,6 @@ from cellseg1.peft.sam_lora_image_encoder_mask_decoder import LoRA_Sam
 from cellseg1.segment_anything import sam_model_registry
 from cellseg1.set_environment import set_env
 
-from peft_sam.dataset.get_data_loaders import _fetch_loaders
-
 
 def prepare_directories(config: Dict):
     Path(config["result_pth_path"]).parent.mkdir(exist_ok=True, parents=True)
@@ -43,14 +41,21 @@ def load_model(config: Dict) -> LoRA_Sam:
 
 
 def setup_training(
-    config: Dict, model: LoRA_Sam,
+    config: Dict, model: LoRA_Sam, train_dataset: TrainDataset
 ) -> Tuple[DataLoader, optim.Optimizer, OneCycleLR]:
     optimizer = optim.AdamW(
         filter(lambda p: p.requires_grad, model.parameters()),
         lr=config["base_lr"],
     )
-    # custom_collate_func = create_collate_fn(config)
-    trainloader = _fetch_loaders('covid_if', "/scratch/usr/nimcarot/data")
+    custom_collate_func = create_collate_fn(config)
+    trainloader = DataLoader(
+        train_dataset,
+        batch_size=config["batch_size"],
+        shuffle=True,
+        num_workers=config["num_workers"],
+        pin_memory=True,
+        collate_fn=custom_collate_func,
+    )
     scheduler = OneCycleLR(
         optimizer,
         max_lr=config["base_lr"],
@@ -161,7 +166,6 @@ def train_epoch(
     for i_batch, batch_data in enumerate(tqdm(trainloader, desc="Batches", leave=False)):
         if stop_event is not None and stop_event.is_set():
             return
-        breakpoint()
         images, true_instance_masks, cell_masks, all_points, all_cell_probs = batch_data
 
         if not is_valid_batch(images, all_points):
@@ -200,8 +204,9 @@ def main(config_path: Union[str, Dict, Path], save_model: bool = True) -> LoRA_S
     )
     prepare_directories(config)
 
+    train_dataset = load_dataset(config)
     model = load_model(config)
-    trainloader, optimizer, scheduler = setup_training(config, model)
+    trainloader, optimizer, scheduler = setup_training(config, model, train_dataset)
 
     if config["track_gpu_memory"]:
         gpu_memory_tracker = GPUMemoryTracker()
@@ -219,7 +224,3 @@ def main(config_path: Union[str, Dict, Path], save_model: bool = True) -> LoRA_S
         with open(Path(config["result_pth_path"]).parent / "memory_stats.json", "w") as f:
             json.dump(memory_stats, f, indent=4)
     return model
-
-
-if __name__ == "__main__":
-    main("example_config.yaml")

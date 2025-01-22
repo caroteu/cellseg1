@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from cellseg1_train import main
+from cellseg1.cellseg1_train import main
 from project_root import PROJECT_ROOT
 
 if __name__ == "__main__":

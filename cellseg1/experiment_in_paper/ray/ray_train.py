@@ -3,7 +3,7 @@ import time
 
 from ray import tune
 
-from cellseg1_train import main
+from cellseg1.cellseg1_train import main
 from experiment_in_paper.ray.utils import load_configs
 from project_root import PROJECT_ROOT
 

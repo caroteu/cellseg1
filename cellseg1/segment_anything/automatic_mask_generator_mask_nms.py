@@ -7,7 +7,7 @@ import torch
 
 # from torchvision.ops.boxes import batched_nms, box_area  # type: ignore
 # from torchvision.ops.boxes import box_area  # type: ignore
-from mask_nms import mask_nms_not_opt, calculate_scores
+from cellseg1.mask_nms import mask_nms_not_opt, calculate_scores
 from typing import Any, Dict, List, Optional, Tuple
 
 from .modeling import Sam
