@@ -1,15 +1,13 @@
 import os
+import argparse
 
 import yaml
 import shutil
 
 from cellseg1.cellseg1_train import main
 
-ALL_DATASETS = {'covid_if': 'lm', 'orgasegment': 'lm', 'gonuclear': 'lm', 'mitolab_glycolytic_muscle': 'em_organelles',
-                'platy_cilia': 'em_organelles', 'hpa': 'lm', 'livecell': 'lm'}
 
-
-def adjust_config(config, model, dataset, finetuned=True):
+def adjust_config(config, model, dataset):
     config["model_path"] = f"/user/teuber5/u12094/.cache/micro_sam/models/{model}"
     config["data_dir"] = f"/scratch/usr/nimcarot/data/{dataset}/slices"
     config["result_dir"] = f"/scratch/usr/nimcarot/sam/peft/cellseg1/{model}/{dataset}/"
@@ -56,10 +54,13 @@ def copy_and_modify_config(example_config_path, dataset, model):
 if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     config_file = ("base_config.yaml")
-    for dataset, roi in ALL_DATASETS.items():
-        models = ["vit_b", f"vit_b_{roi}"] if dataset != "livecell" else ["vit_b"]
-        for model in models:
-            config = copy_and_modify_config(config_file, dataset, model)
-            print(config)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", "-d", type=str, required=True)
+    parser.add_argument("--model_type", "-m", type=str, required=True)
+    args = parser.parse_args()
+
+    config = copy_and_modify_config(config_file, args.dataset, args.model_type)
+    print(config)
 
     model = main(config, save_model=True)
