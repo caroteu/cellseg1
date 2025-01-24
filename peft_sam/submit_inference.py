@@ -52,12 +52,7 @@ def get_batch_script_names(tmp_folder):
     return batch_script
 
 
-def cpkt_exists(cpkt_name, args):
-    checkpoint_path = os.path.join(args.save_root, "checkpoints", cpkt_name, "best.pt")
-    return os.path.exists(checkpoint_path)
-
-
-def run_peft_finetuning(args):
+def run_peft_finetuning():
     for dataset, domain in ALL_DATASETS.items():
         gen_model = f"vit_b_{domain}"
         models = ["vit_b"] if dataset == "livecell" else ["vit_b", gen_model]
@@ -69,8 +64,8 @@ def run_peft_finetuning(args):
             )
 
 
-def main(args):
-    run_peft_finetuning(args)
+def main():
+    run_peft_finetuning()
 
 
 if __name__ == "__main__":
@@ -78,16 +73,5 @@ if __name__ == "__main__":
         shutil.rmtree("./gpu_jobs")
     except FileNotFoundError:
         pass
+    main()
 
-    # Set up argument parsing
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-s", "--save_root",
-        type=str,
-        default="/scratch/usr/nimcarot/sam/experiments/peft",
-        help="Path to save checkpoints."
-    )
-
-    args = parser.parse_args()
-    main(args)
